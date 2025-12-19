@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { RSVPFormData } from '../types';
-import { saveRSVP } from '../services/storage';
-import { CheckCircle, Mail, User, Users, MessageSquare } from 'lucide-react';
+import { CheckCircle, User, Users } from 'lucide-react';
 
 interface RSVPFormProps {
   inviteType: 'small' | 'family';
@@ -31,12 +30,21 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ inviteType }) => {
     setIsSubmitting(true);
 
     try {
-      await saveRSVP({
-        fullName: formData.fullName,
-        attending: 'accept',
-        guestCount: Number(formData.guestCount),
-        inviteType,
+      const res = await fetch('/.netlify/functions/saveRSVP', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          attending: 'accept',
+          guestCount: Number(formData.guestCount),
+          inviteType,
+        }),
       });
+
+      if (!res.ok) throw new Error('Failed');
+
       setSubmitted(true);
     } catch (err) {
       alert('Something went wrong');

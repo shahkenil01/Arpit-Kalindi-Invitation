@@ -1,24 +1,16 @@
-// src/types.ts
-
-export interface WeddingDetails {
-  bride: string;
-  groom: string;
-  date: string;
-  time: string;
-  locationName: string;
-  address: string;
-  mapUrl: string;
-  rsvpDeadline: string;
+// ===== RSVP FORM STATE =====
+export interface RSVPFormData {
+  fullName: string;
+  attending: 'accept';
+  guestCount: number;
 }
 
-export interface GuestConfig {
-  type: "family" | "friends" | "general";
-  maxGuests: number;
-  label: string;
-}
-
-export interface ChatMessage {
-  role: "user" | "model";
-  text: string;
-  isError?: boolean;
+// ===== DATABASE / ADMIN DATA =====
+export interface GuestRSVP {
+  id: string;
+  fullName: string;
+  attending: 'accept';
+  guestCount: number;
+  inviteType: 'small' | 'family';
+  timestamp: number;
 }
