@@ -41,7 +41,6 @@ const AdminPage: React.FC = () => {
                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Status</th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Guests</th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Type</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Message</th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Date</th>
               </tr>
             </thead>
@@ -55,7 +54,6 @@ const AdminPage: React.FC = () => {
                   <tr key={rsvp.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div className="font-medium text-gray-900">{rsvp.fullName}</div>
-                      <div className="text-sm text-gray-500">{rsvp.email}</div>
                     </td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -71,9 +69,6 @@ const AdminPage: React.FC = () => {
                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
                         {rsvp.inviteType.toUpperCase()}
                       </span>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
-                      {rsvp.message || '-'}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-400">
                       {new Date(rsvp.timestamp).toLocaleDateString()}

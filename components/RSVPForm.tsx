@@ -12,10 +12,8 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ inviteType }) => {
 
   const [formData, setFormData] = useState<RSVPFormData>({
     fullName: '',
-    email: '',
     attending: 'accept',
     guestCount: 1,
-    message: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,10 +33,8 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ inviteType }) => {
     try {
       await saveRSVP({
         fullName: formData.fullName,
-        email: formData.email,
         attending: 'accept',
         guestCount: Number(formData.guestCount),
-        message: formData.message,
         inviteType,
       });
       setSubmitted(true);
@@ -120,22 +116,6 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ inviteType }) => {
               value={formData.fullName}
               onChange={handleChange}
               placeholder="Enter your full name"
-              className="w-full px-0 py-4 border-b-2 border-wedding-cream focus:border-wedding-gold outline-none transition-all duration-300 bg-transparent text-lg font-serif"
-            />
-          </div>
-
-          {/* Email Field */}
-          <div className="group">
-            <label className="flex items-center text-sm uppercase tracking-wider mb-3 text-wedting-dark/70">
-              <Mail className="w-4 h-4 mr-2" />
-              Email / Mobile
-            </label>
-            <input
-              required
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Your email or mobile number"
               className="w-full px-0 py-4 border-b-2 border-wedding-cream focus:border-wedding-gold outline-none transition-all duration-300 bg-transparent text-lg font-serif"
             />
           </div>
