@@ -4,6 +4,15 @@ const uri = process.env.MONGODB_URI as string;
 const dbName = process.env.MONGODB_DB as string;
 const collectionName = process.env.MONGODB_COLLECTION as string;
 
+function normalizeName(name: string) {
+  return name
+    .toLowerCase()
+    .trim()
+    .split(/\s+/)
+    .sort()
+    .join(' ');
+}
+
 export const handler = async (event: any) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -12,31 +21,31 @@ export const handler = async (event: any) => {
   try {
     const data = JSON.parse(event.body);
 
-    const normalizedName = data.fullName.trim().toLowerCase();
+    const fullName = data.fullName.trim();
+    const fullNameKey = normalizeName(fullName);
 
     const client = new MongoClient(uri);
     await client.connect();
 
-    const db = client.db(dbName);
-    const collection = db.collection(collectionName);
+    const collection = client.db(dbName).collection(collectionName);
 
-    const existing = await collection.findOne({
-      fullName: normalizedName,
-    });
-
+    // 🔒 DUPLICATE CHECK
+    const existing = await collection.findOne({ fullNameKey });
     if (existing) {
       await client.close();
       return {
         statusCode: 409,
         body: JSON.stringify({
-          message: "You’ve already responded. Kindly contact Arpit.",
+          message:
+            'You have already submitted your response. Kindly contact Arpit.',
         }),
       };
     }
 
     await collection.insertOne({
       ...data,
-      fullName: normalizedName,
+      fullName,        // original casing preserved
+      fullNameKey,     // internal use only
       timestamp: new Date(),
     });
 
@@ -50,7 +59,7 @@ export const handler = async (event: any) => {
     console.error(error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ success: false, error: 'DB error' }),
+      body: JSON.stringify({ success: false }),
     };
   }
 };

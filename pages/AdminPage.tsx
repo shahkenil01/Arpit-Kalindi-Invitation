@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { GuestRSVP } from '../types';
 
+const ITEMS_PER_PAGE = 10;
+
 const AdminPage: React.FC = () => {
   const [rsvps, setRsvps] = useState<GuestRSVP[]>([]);
   const [editing, setEditing] = useState<GuestRSVP | null>(null);
   const [editType, setEditType] = useState<'small' | 'family'>('small');
   const [editGuests, setEditGuests] = useState<number>(1);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     fetch('/.netlify/functions/getRSVPs')
@@ -14,9 +17,18 @@ const AdminPage: React.FC = () => {
       .catch(console.error);
   }, []);
 
+  /* ===== STATS (FULL DATA) ===== */
   const responses = rsvps.length;
   const accepted = rsvps.filter(r => r.attending === 'accept').length;
   const totalGuests = rsvps.reduce((sum, r) => sum + r.guestCount, 0);
+
+  /* ===== PAGINATION ===== */
+  const totalPages = Math.ceil(rsvps.length / ITEMS_PER_PAGE);
+  const startIndex = (page - 1) * ITEMS_PER_PAGE;
+  const paginatedRsvps = rsvps.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this RSVP?')) return;
@@ -50,7 +62,7 @@ const AdminPage: React.FC = () => {
 
         {/* MOBILE VIEW */}
         <div className="space-y-4 md:hidden">
-          {rsvps.map(rsvp => (
+          {paginatedRsvps.map(rsvp => (
             <div key={rsvp._id} className="bg-white rounded-lg p-4 shadow">
               <div className="flex justify-between items-start">
                 <div>
@@ -103,7 +115,6 @@ const AdminPage: React.FC = () => {
             <thead className="bg-gray-50 border-b">
               <tr>
                 <th className="px-6 py-4 text-xs font-bold uppercase">Name</th>
-                <th className="px-6 py-4 text-xs font-bold uppercase">Status</th>
                 <th className="px-6 py-4 text-xs font-bold uppercase">Guests</th>
                 <th className="px-6 py-4 text-xs font-bold uppercase">Type</th>
                 <th className="px-6 py-4 text-xs font-bold uppercase">Date</th>
@@ -111,16 +122,11 @@ const AdminPage: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {rsvps.map(rsvp => (
+              {paginatedRsvps.map(rsvp => (
                 <tr key={rsvp._id} className="border-t hover:bg-gray-50">
                   <td className="px-6 py-4 font-medium">{rsvp.fullName}</td>
-                  <td className="px-6 py-4">
-                    <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded">
-                      ACCEPT
-                    </span>
-                  </td>
                   <td className="px-6 py-4">{rsvp.guestCount}</td>
-                  <td className="px-6 py-4 uppercase text-sm">{rsvp.inviteType}</td>
+                  <td className="px-6 py-4 uppercase">{rsvp.inviteType}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">
                     {new Date(rsvp.timestamp).toLocaleDateString()}
                   </td>
@@ -147,9 +153,34 @@ const AdminPage: React.FC = () => {
             </tbody>
           </table>
         </div>
+
+        {/* PAGINATION CONTROLS */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-4 mt-6">
+            <button
+              disabled={page === 1}
+              onClick={() => setPage(p => p - 1)}
+              className="px-3 py-1 border rounded disabled:opacity-40"
+            >
+              Prev
+            </button>
+
+            <span className="text-sm">
+              Page {page} of {totalPages}
+            </span>
+
+            <button
+              disabled={page === totalPages}
+              onClick={() => setPage(p => p + 1)}
+              className="px-3 py-1 border rounded disabled:opacity-40"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* EDIT MODAL (same as before, already responsive) */}
+      {/* EDIT MODAL – unchanged */}
       {editing && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-md rounded-lg p-6">
