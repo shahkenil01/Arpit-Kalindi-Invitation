@@ -43,6 +43,12 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ inviteType }) => {
         }),
       });
 
+      if (res.status === 409) {
+        const data = await res.json();
+        alert(data.message);
+        return;
+      }
+
       if (!res.ok) throw new Error('Failed');
 
       setSubmitted(true);
@@ -93,10 +99,10 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ inviteType }) => {
           <div className="w-12 h-px bg-wedding-gold"></div>
         </div>
         <h2 className="text-5xl font-display text-wedting-dark mb-4">
-          R.S.V.P
+          Confirm Your Presence
         </h2>
         <p className="text-lg font-serif text-wedting-brown/80">
-          Please confirm your attendance by{' '}
+          Please confirm your attendance <br/> by{' '}
           <span className="font-serif font-normal text-wedding-dark tracking-wide">
             February <span className="text-wedding-gold">1</span><sup className="text-xs">st</sup>, 2026
           </span>

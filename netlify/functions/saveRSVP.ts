@@ -12,14 +12,31 @@ export const handler = async (event: any) => {
   try {
     const data = JSON.parse(event.body);
 
+    const normalizedName = data.fullName.trim().toLowerCase();
+
     const client = new MongoClient(uri);
     await client.connect();
 
     const db = client.db(dbName);
     const collection = db.collection(collectionName);
 
+    const existing = await collection.findOne({
+      fullName: normalizedName,
+    });
+
+    if (existing) {
+      await client.close();
+      return {
+        statusCode: 409,
+        body: JSON.stringify({
+          message: "You’ve already responded. Kindly contact Arpit.",
+        }),
+      };
+    }
+
     await collection.insertOne({
       ...data,
+      fullName: normalizedName,
       timestamp: new Date(),
     });
 
