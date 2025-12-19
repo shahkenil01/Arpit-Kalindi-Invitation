@@ -3,11 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>The Wedding of Arpit & Kalindi</title>
-    <!-- Google Fonts: Cormorant Garamond & Montserrat -->
+    <title>The Wedding of Arpit & Kalindi | February 7, 2026</title>
+    
+    <!-- Premium Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -18,21 +19,26 @@
         theme: {
           extend: {
             fontFamily: {
-              serif: ['"Cormorant Garamond"', 'serif'],
-              sans: ['"Montserrat"', 'sans-serif'],
+              'display': ['Playfair Display', 'serif'],
+              'serif': ['Cormorant Garamond', 'serif'],
+              'sans': ['Montserrat', 'sans-serif'],
             },
             colors: {
               wedding: {
-                light: '#F8F9FA', // Clean soft white
-                cream: '#E9EFEC', // Very light sage/mist
-                gold: '#C5A065', // Classic Gold
-                brown: '#4A5D50', // Muted Sage/Green text (replaced brown)
-                dark: '#16423C', // Deep Emerald Green (replaced charcoal)
+                light: '#FBF9F5',
+                cream: '#F5F1E8',
+                gold: '#D4AF37',
+                accent: '#B8860B',
+                dark: '#1A1A1A',
+                brown: '#5D4037',
+                sage: '#8A9B68',
               }
             },
             animation: {
               'fade-in': 'fadeIn 1.5s ease-out forwards',
               'slide-up': 'slideUp 1s ease-out forwards',
+              'float': 'float 6s ease-in-out infinite',
+              'pulse-slow': 'pulse 3s ease-in-out infinite',
             },
             keyframes: {
               fadeIn: {
@@ -40,29 +46,57 @@
                 '100%': { opacity: '1' },
               },
               slideUp: {
-                '0%': { opacity: '0', transform: 'translateY(20px)' },
+                '0%': { opacity: '0', transform: 'translateY(40px)' },
                 '100%': { opacity: '1', transform: 'translateY(0)' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0px)' },
+                '50%': { transform: 'translateY(-20px)' },
               }
+            },
+            backgroundImage: {
+              'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+              'gold-gradient': 'linear-gradient(135deg, #D4AF37 0%, #B8860B 100%)',
             }
           }
         }
       }
     </script>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.11.0",
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
-</head>
-  <body class="bg-wedding-light text-wedding-dark antialiased">
+    <script type="importmap">
+      {
+        "imports": {
+          "react": "https://esm.sh/react@^19.2.3",
+          "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+          "react/": "https://esm.sh/react@^19.2.3/",
+          "react-router-dom": "https://esm.sh/react-router-dom@^7.11.0",
+          "lucide-react": "https://esm.sh/lucide-react@^0.562.0"
+        }
+      }
+    </script>
+    <style>
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #F5F1E8;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #D4AF37;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #B8860B;
+      }
+      
+      /* Text Selection */
+      ::selection {
+        background: rgba(212, 175, 55, 0.3);
+      }
+    </style>
+  </head>
+  <body class="bg-wedding-light text-wedding-dark antialiased overflow-x-hidden">
     <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
-</body>
+    <script type="module" src="/index.tsx"></script>
+  </body>
 </html>
