@@ -7,7 +7,6 @@ const AdminPage: React.FC = () => {
   const [editType, setEditType] = useState<'small' | 'family'>('small');
   const [editGuests, setEditGuests] = useState<number>(1);
 
-  // FETCH RSVPS
   useEffect(() => {
     fetch('/.netlify/functions/getRSVPs')
       .then(res => res.json())
@@ -15,12 +14,10 @@ const AdminPage: React.FC = () => {
       .catch(console.error);
   }, []);
 
-  // STATS
   const responses = rsvps.length;
   const accepted = rsvps.filter(r => r.attending === 'accept').length;
   const totalGuests = rsvps.reduce((sum, r) => sum + r.guestCount, 0);
 
-  // DELETE
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this RSVP?')) return;
 
@@ -34,45 +31,74 @@ const AdminPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8 font-sans">
+    <div className="min-h-screen bg-gray-100 p-4 md:p-8 font-sans">
       <div className="max-w-6xl mx-auto">
 
-        {/* ===== HEADER ===== */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">
+        {/* HEADER */}
+        <div className="mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold mb-4">
             Wedding Dashboard
           </h1>
 
-          <div className="bg-white rounded shadow px-6 py-4 flex gap-8 text-center">
-            <div>
-              <div className="text-2xl font-bold text-wedding-gold">
-                {responses}
-              </div>
-              <div className="text-xs text-gray-500 uppercase">
-                Responses
-              </div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-green-600">
-                {accepted}
-              </div>
-              <div className="text-xs text-gray-500 uppercase">
-                Accepted
-              </div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-blue-600">
-                {totalGuests}
-              </div>
-              <div className="text-xs text-gray-500 uppercase">
-                Total Guests
-              </div>
-            </div>
+          {/* STATS */}
+          <div className="grid grid-cols-3 gap-3">
+            <Stat label="Responses" value={responses} color="text-wedding-gold" />
+            <Stat label="Accepted" value={accepted} color="text-green-600" />
+            <Stat label="Guests" value={totalGuests} color="text-blue-600" />
           </div>
         </div>
 
-        {/* ===== TABLE ===== */}
-        <div className="bg-white rounded shadow overflow-hidden">
+        {/* MOBILE VIEW */}
+        <div className="space-y-4 md:hidden">
+          {rsvps.map(rsvp => (
+            <div key={rsvp._id} className="bg-white rounded-lg p-4 shadow">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="font-semibold">{rsvp.fullName}</p>
+                  <p className="text-sm text-gray-500">
+                    {new Date(rsvp.timestamp).toLocaleDateString()}
+                  </p>
+                </div>
+                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                  ACCEPT
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 mt-3 text-sm">
+                <div>
+                  <span className="text-gray-500">Guests</span>
+                  <p className="font-medium">{rsvp.guestCount}</p>
+                </div>
+                <div>
+                  <span className="text-gray-500">Type</span>
+                  <p className="font-medium uppercase">{rsvp.inviteType}</p>
+                </div>
+              </div>
+
+              <div className="flex gap-4 mt-4">
+                <button
+                  className="flex-1 py-2 border rounded text-sm"
+                  onClick={() => {
+                    setEditing(rsvp);
+                    setEditType(rsvp.inviteType);
+                    setEditGuests(rsvp.guestCount);
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  className="flex-1 py-2 border border-red-500 text-red-600 rounded text-sm"
+                  onClick={() => handleDelete(rsvp._id)}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* DESKTOP TABLE */}
+        <div className="hidden md:block bg-white rounded shadow overflow-hidden mt-6">
           <table className="w-full text-left">
             <thead className="bg-gray-50 border-b">
               <tr>
@@ -84,24 +110,17 @@ const AdminPage: React.FC = () => {
                 <th className="px-6 py-4 text-xs font-bold uppercase">Actions</th>
               </tr>
             </thead>
-
             <tbody>
               {rsvps.map(rsvp => (
                 <tr key={rsvp._id} className="border-t hover:bg-gray-50">
-                  <td className="px-6 py-4 font-medium">
-                    {rsvp.fullName}
-                  </td>
+                  <td className="px-6 py-4 font-medium">{rsvp.fullName}</td>
                   <td className="px-6 py-4">
-                    <span className="inline-block px-2 py-1 text-xs rounded-full bg-green-100 text-green-700">
+                    <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded">
                       ACCEPT
                     </span>
                   </td>
                   <td className="px-6 py-4">{rsvp.guestCount}</td>
-                  <td className="px-6 py-4">
-                    <span className="px-2 py-1 text-xs bg-gray-100 rounded uppercase">
-                      {rsvp.inviteType}
-                    </span>
-                  </td>
+                  <td className="px-6 py-4 uppercase text-sm">{rsvp.inviteType}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">
                     {new Date(rsvp.timestamp).toLocaleDateString()}
                   </td>
@@ -125,20 +144,12 @@ const AdminPage: React.FC = () => {
                   </td>
                 </tr>
               ))}
-
-              {rsvps.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
-                    No RSVPs yet
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>
       </div>
 
-      {/* ===== EDIT MODAL ===== */}
+      {/* EDIT MODAL (same as before, already responsive) */}
       {editing && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-md rounded-lg p-6">
@@ -146,7 +157,6 @@ const AdminPage: React.FC = () => {
               Edit RSVP – {editing.fullName}
             </h3>
 
-            {/* TYPE */}
             <div className="mb-4">
               <p className="text-sm font-semibold mb-2">Invite Type</p>
               <div className="flex gap-4">
@@ -166,9 +176,8 @@ const AdminPage: React.FC = () => {
               </div>
             </div>
 
-            {/* GUESTS */}
             <div className="mb-6">
-              <p className="text-sm font-semibold mb-2">Number of Guests</p>
+              <p className="text-sm font-semibold mb-2">Guests</p>
               <div className="flex gap-3 flex-wrap">
                 {Array.from(
                   { length: editType === 'family' ? 6 : 2 },
@@ -186,7 +195,6 @@ const AdminPage: React.FC = () => {
               </div>
             </div>
 
-            {/* ACTIONS */}
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setEditing(null)}
@@ -194,7 +202,6 @@ const AdminPage: React.FC = () => {
               >
                 Cancel
               </button>
-
               <button
                 onClick={async () => {
                   const res = await fetch('/.netlify/functions/updateRSVP', {
@@ -234,5 +241,20 @@ const AdminPage: React.FC = () => {
     </div>
   );
 };
+
+const Stat = ({
+  label,
+  value,
+  color,
+}: {
+  label: string;
+  value: number;
+  color: string;
+}) => (
+  <div className="bg-white rounded shadow p-3 text-center">
+    <div className={`text-xl font-bold ${color}`}>{value}</div>
+    <div className="text-xs text-gray-500 uppercase">{label}</div>
+  </div>
+);
 
 export default AdminPage;
