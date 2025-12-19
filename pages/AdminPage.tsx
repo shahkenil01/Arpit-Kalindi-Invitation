@@ -9,6 +9,62 @@ const AdminPage: React.FC = () => {
     getRSVPs().then(setRsvps);
   }, []);
 
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Delete this RSVP?')) return;
+
+    await fetch('/.netlify/functions/deleteRSVP', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+
+    setRsvps(prev => prev.filter(r => r._id !== id));
+  };
+
+  const handleEdit = async (rsvp: any) => {
+    const inviteType = prompt(
+      'Invite Type (small / family)',
+      rsvp.inviteType
+    )?.toLowerCase();
+
+    if (inviteType !== 'small' && inviteType !== 'family') {
+      alert('Invite type must be small or family');
+      return;
+    }
+
+    const maxGuests = inviteType === 'family' ? 6 : 2;
+    const guestCount = Number(
+      prompt(`Guest Count (max ${maxGuests})`, rsvp.guestCount)
+    );
+
+    if (!guestCount || guestCount < 1 || guestCount > maxGuests) {
+      alert(`Guest count must be between 1 and ${maxGuests}`);
+      return;
+    }
+
+    const res = await fetch('/.netlify/functions/updateRSVP', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: rsvp._id,
+        guestCount,
+        inviteType,
+      }),
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      alert(data.message || 'Update failed');
+      return;
+    }
+
+    setRsvps(prev =>
+      prev.map(r =>
+        r._id === rsvp._id ? { ...r, guestCount, inviteType } : r
+      )
+    );
+  };
+
   const acceptedCount = rsvps.filter(r => r.attending === 'accept').length;
   const totalGuests = rsvps.reduce((acc, curr) => acc + (curr.guestCount || 0), 0);
 
@@ -42,6 +98,7 @@ const AdminPage: React.FC = () => {
                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Guests</th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Type</th>
                 <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Date</th>
+                <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -72,6 +129,21 @@ const AdminPage: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-400">
                       {new Date(rsvp.timestamp).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 flex gap-2">
+                      <button
+                        onClick={() => handleEdit(rsvp)}
+                        className="text-blue-600 text-sm"
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(rsvp._id)}
+                        className="text-red-600 text-sm"
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))

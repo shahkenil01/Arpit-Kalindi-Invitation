@@ -5,43 +5,19 @@ const dbName = process.env.MONGODB_DB as string;
 const collectionName = process.env.MONGODB_COLLECTION as string;
 
 export const handler = async (event: any) => {
-  if (event.httpMethod !== 'PUT') {
+  if (event.httpMethod !== 'DELETE') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
   try {
-    const { id, guestCount, inviteType } = JSON.parse(event.body);
+    const { id } = JSON.parse(event.body);
 
     const client = new MongoClient(uri);
     await client.connect();
 
     const collection = client.db(dbName).collection(collectionName);
 
-    // VALIDATION
-    if (inviteType === 'small' && guestCount > 2) {
-      await client.close();
-      return {
-        statusCode: 400,
-        body: JSON.stringify({
-          message: 'Small invite can have maximum 2 guests only.',
-        }),
-      };
-    }
-
-    if (inviteType === 'family' && guestCount > 6) {
-      await client.close();
-      return {
-        statusCode: 400,
-        body: JSON.stringify({
-          message: 'Family invite can have maximum 6 guests only.',
-        }),
-      };
-    }
-
-    await collection.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { guestCount, inviteType } }
-    );
+    await collection.deleteOne({ _id: new ObjectId(id) });
 
     await client.close();
 
