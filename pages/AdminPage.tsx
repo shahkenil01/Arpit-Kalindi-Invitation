@@ -6,7 +6,7 @@ const AdminPage: React.FC = () => {
   const [rsvps, setRsvps] = useState<GuestRSVP[]>([]);
 
   useEffect(() => {
-    setRsvps(getRSVPs());
+    getRSVPs().then(setRsvps);
   }, []);
 
   const acceptedCount = rsvps.filter(r => r.attending === 'accept').length;
