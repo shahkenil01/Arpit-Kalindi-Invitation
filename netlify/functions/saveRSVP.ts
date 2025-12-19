@@ -4,6 +4,18 @@ const uri = process.env.MONGODB_URI as string;
 const dbName = process.env.MONGODB_DB as string;
 const collectionName = process.env.MONGODB_COLLECTION as string;
 
+let cachedClient: MongoClient | null = null;
+
+async function getClient() {
+  if (!uri) throw new Error('MONGODB_URI missing');
+  if (cachedClient) return cachedClient;
+
+  const client = new MongoClient(uri);
+  await client.connect();
+  cachedClient = client;
+  return client;
+}
+
 function normalizeName(name: string) {
   return name
     .toLowerCase()
@@ -24,15 +36,12 @@ export const handler = async (event: any) => {
     const fullName = data.fullName.trim();
     const fullNameKey = normalizeName(fullName);
 
-    const client = new MongoClient(uri);
-    await client.connect();
-
+    const client = await getClient();
     const collection = client.db(dbName).collection(collectionName);
 
     // 🔒 DUPLICATE CHECK
     const existing = await collection.findOne({ fullNameKey });
     if (existing) {
-      await client.close();
       return {
         statusCode: 409,
         body: JSON.stringify({
@@ -49,14 +58,12 @@ export const handler = async (event: any) => {
       timestamp: new Date(),
     });
 
-    await client.close();
-
     return {
       statusCode: 200,
       body: JSON.stringify({ success: true }),
     };
   } catch (error) {
-    console.error(error);
+    console.error('saveRSVP error:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ success: false }),
