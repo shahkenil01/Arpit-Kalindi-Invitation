@@ -185,7 +185,7 @@ const RSVPForm: React.FC<RSVPFormProps> = ({ inviteType }) => {
                   Sending Your Response...
                 </>
               ) : (
-                'Confirm Your Attendance'
+                'Confirm Your Presence'
               )}
             </span>
           </button>
