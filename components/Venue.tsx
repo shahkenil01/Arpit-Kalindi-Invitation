@@ -3,10 +3,11 @@ import { MapPin, Calendar, Clock, Users } from 'lucide-react';
 
 const Venue: React.FC = () => {
   const events = [
-    { time: '6:30 AM', title: 'Ganesh Sthapana', icon: '🕉️' },
-    { time: '7:30 PM', title: 'Haldi Ceremony', icon: '💛' },
-    { time: '9:30 PM', title: 'Grah Shanti Puja', icon: '🪔' },
-    { time: '12:30 PM', title: 'Dinner & Reception', icon: '🎉' },
+    { time: '7:30 AM', title: 'Ganesh Sthapana', icon: '🕉️' },
+    { time: '8:00 AM', title: 'Mandap Muhurat', icon: '🕉️' },
+    { time: '9:30 AM', title: 'Grah Shanti Puja', icon: '🪔' },
+    { time: '10:00 AM', title: 'Haldi Ceremony', icon: '💛' },
+    { time: '11:30 AM', title: 'Dinner', icon: '🎉' }
   ];
 
   return (
@@ -43,7 +44,7 @@ const Venue: React.FC = () => {
                   </p>
                   <div className="flex items-center text-wedting-sage mt-2">
                     <Clock className="w-4 h-4 mr-2" />
-                    <span className="font-sans">6:30 AM Onwards</span>
+                    <span className="font-sans">8:30 AM Onwards</span>
                   </div>
                 </div>
               </div>
