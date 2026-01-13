@@ -44,7 +44,7 @@ const Venue: React.FC = () => {
                   </p>
                   <div className="flex items-center text-wedting-sage mt-2">
                     <Clock className="w-4 h-4 mr-2" />
-                    <span className="font-sans">8:30 AM Onwards</span>
+                    <span className="font-sans">8:00 AM Onwards</span>
                   </div>
                 </div>
               </div>
