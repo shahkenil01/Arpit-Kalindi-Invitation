@@ -7,7 +7,7 @@ const Venue: React.FC = () => {
     { time: '8:00 AM', title: 'Mandap Muhurat', icon: '🕉️' },
     { time: '9:30 AM', title: 'Grah Shanti Puja', icon: '🪔' },
     { time: '10:00 AM', title: 'Haldi Ceremony', icon: '💛' },
-    { time: '11:30 AM', title: 'Dinner', icon: '🎉' }
+    { time: '11:30 AM', title: 'Dinner', icon: '🍴' }
   ];
 
   return (
