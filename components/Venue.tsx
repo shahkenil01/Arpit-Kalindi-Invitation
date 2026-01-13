@@ -3,7 +3,7 @@ import { MapPin, Calendar, Clock, Users } from 'lucide-react';
 
 const Venue: React.FC = () => {
   const events = [
-    { time: '7:30 AM', title: 'Ganesh Sthapana', icon: '🕉️' },
+    { time: '7:30 AM', title: 'Ganesh Sthapana', icon: 'ॐ' },
     { time: '8:00 AM', title: 'Mandap Muhurat', icon: '🕉️' },
     { time: '9:30 AM', title: 'Grah Shanti Puja', icon: '🪔' },
     { time: '10:00 AM', title: 'Haldi Ceremony', icon: '💛' },
