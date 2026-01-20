@@ -7,7 +7,7 @@ const Venue: React.FC = () => {
     { time: '8:00 AM', title: 'Mandap Muhurat', icon: '🕉️' },
     { time: '9:30 AM', title: 'Grah Shanti Puja', icon: '🪔' },
     { time: '10:00 AM', title: 'Haldi Ceremony', icon: '💛' },
-    { time: '11:30 AM', title: 'Dinner', icon: '🍴' }
+    { time: '11:30 AM', title: 'Lunch', icon: '🍴' }
   ];
 
   return (
@@ -134,24 +134,6 @@ const Venue: React.FC = () => {
               </div>
             </div>
 
-            {/* Additional Info */}
-            <div className="mt-8 bg-white p-6 rounded-lg shadow-lg border border-wedding-cream">
-              <h4 className="font-display text-xl text-wedting-dark mb-4">Important Notes</h4>
-              <ul className="space-y-3">
-                <li className="flex items-start space-x-3">
-                  <div className="w-2 h-2 mt-2 rounded-full bg-wedding-gold"></div>
-                  <span className="font-sans text-wedting-brown/80">Traditional Indian attire preferred</span>
-                </li>
-                <li className="flex items-start space-x-3">
-                  <div className="w-2 h-2 mt-2 rounded-full bg-wedding-gold"></div>
-                  <span className="font-sans text-wedting-brown/80">Flowers and blessings welcome</span>
-                </li>
-                <li className="flex items-start space-x-3">
-                  <div className="w-2 h-2 mt-2 rounded-full bg-wedding-gold"></div>
-                  <span className="font-sans text-wedting-brown/80">Valet parking available</span>
-                </li>
-              </ul>
-            </div>
           </div>
 
         </div>
